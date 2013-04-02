@@ -6,6 +6,7 @@
 
 module Data.ByteString.Fixed.Internal
     ( FixedByteString(..)
+    , NatReflection(..), NatProxy
     , fromByteString
     , toByteString
     ) where

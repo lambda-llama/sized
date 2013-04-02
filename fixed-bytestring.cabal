@@ -25,6 +25,7 @@ Library
       , deepseq                    == 1.3.*
 
     Exposed-modules:
+        Data.ByteString.Fixed
         Data.ByteString.Fixed.Internal
         Data.ByteString.Fixed.Internal.Foreign
 
