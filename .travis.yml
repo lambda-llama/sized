@@ -1,0 +1,3 @@
+language: haskell
+install: "cabal update && cabal install --only-dependencies"
+script: "cabal configure && cabal build"
