@@ -68,3 +68,4 @@ toByteString :: forall a. NatReflection a => FixedByteString a -> ByteString
 toByteString (FixedByteString fp) = unsafeDupablePerformIO $ withForeignPtr fp $ \p -> do
     let size = nat (undefined :: NatProxy a)
     unsafePackCStringLen (castPtr p, fromIntegral size)
+{-# INLINE toByteString #-}
