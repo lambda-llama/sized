@@ -2,11 +2,15 @@
 
 module Data.ByteString.Fixed.Instances () where
 
+import GHC.ForeignPtr (mallocPlainForeignPtrBytes)
+
 import Control.DeepSeq (NFData)
-import Foreign (withForeignPtr)
+import Data.Word (Word8)
+import Foreign (withForeignPtr, castPtr)
+import Foreign.Storable (Storable(..))
 import System.IO.Unsafe (unsafeDupablePerformIO)
 
-import Data.ByteString.Fixed.Foreign (memcmp)
+import Data.ByteString.Fixed.Foreign (memcmp, memcpy)
 import Data.ByteString.Fixed.Internal (FixedByteString(..), NatReflection(..), NatProxy)
 
 instance NFData (FixedByteString size)
@@ -28,6 +32,18 @@ instance NatReflection a => Ord (FixedByteString a) where
               | c >  0 -> GT
       where
         size = fromIntegral $ nat (undefined :: NatProxy a)
+
+instance NatReflection a => Storable (FixedByteString a) where
+    sizeOf _ = nat (undefined :: NatProxy a)
+    alignment _ = alignment (undefined :: Word8)
+    peek ptr = do
+        let size = nat (undefined :: NatProxy a)
+        fp <- mallocPlainForeignPtrBytes size
+        withForeignPtr fp $ \p' -> do
+            memcpy p' (castPtr ptr) $ fromIntegral size
+            return $ FixedByteString fp
+    poke ptr f@(FixedByteString fp) = withForeignPtr fp $ \p ->
+        memcpy (castPtr ptr) p $ fromIntegral $ sizeOf f
 
 instance NatReflection 0 where
     nat _ = 0
