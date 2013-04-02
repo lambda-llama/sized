@@ -16,9 +16,16 @@ Cabal-version:      >= 1.16
 Tested-with:        GHC == 7.6.*
 
 Library
-    Hs-source-dirs:   src
-    Ghc-options:      -Wall -fno-warn-orphans
-    Default-language: Haskell2010
+    Hs-source-dirs:     src
+    Ghc-options:        -Wall -fno-warn-orphans
+    Default-language:   Haskell2010
+    Default-extensions:
+        ScopedTypeVariables
+        FlexibleInstances
+        UndecidableInstances
+        KindSignatures
+        DataKinds
+
     Build-depends:
         base                       == 4.6.*
       , bytestring                 == 0.10.*
@@ -26,8 +33,9 @@ Library
 
     Exposed-modules:
         Data.ByteString.Fixed
+        Data.ByteString.Fixed.Foreign
+        Data.ByteString.Fixed.Instances
         Data.ByteString.Fixed.Internal
-        Data.ByteString.Fixed.Internal.Foreign
 
 Source-repository head
     Type:             git

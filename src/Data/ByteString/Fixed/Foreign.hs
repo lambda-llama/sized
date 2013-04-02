@@ -1,6 +1,6 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
 
-module Data.ByteString.Fixed.Internal.Foreign
+module Data.ByteString.Fixed.Foreign
     ( memcpy
     , memcmp
     ) where

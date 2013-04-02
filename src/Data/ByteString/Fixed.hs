@@ -7,3 +7,4 @@ module Data.ByteString.Fixed
 
 import Data.ByteString.Fixed.Internal (FixedByteString(..), NatReflection(..),
                                        NatProxy, fromByteString, toByteString)
+import Data.ByteString.Fixed.Instances ()
