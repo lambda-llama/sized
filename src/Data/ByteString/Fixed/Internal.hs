@@ -1,11 +1,17 @@
+{-# LANGUAGE UnboxedTuples #-}
+{-# LANGUAGE MagicHash #-}
+
 module Data.ByteString.Fixed.Internal
     ( FixedByteString(..)
     , NatReflection(..), NatProxy
     , fromByteString
     , toByteString
+    , inlinePerformIO
     ) where
 
+import GHC.Base (realWorld#)
 import GHC.ForeignPtr (ForeignPtr, mallocPlainForeignPtrBytes)
+import GHC.IO (IO(IO))
 import GHC.TypeLits (Nat)
 
 import Data.ByteString (ByteString)
@@ -43,3 +49,7 @@ toByteString (FixedByteString fp) = unsafeDupablePerformIO $ withForeignPtr fp $
     let size = nat (undefined :: NatProxy a)
     unsafePackCStringLen (castPtr p, fromIntegral size)
 {-# INLINE toByteString #-}
+
+inlinePerformIO :: IO a -> a
+inlinePerformIO (IO m) = case m realWorld# of (# _, r #) -> r
+{-# INLINE inlinePerformIO #-}
