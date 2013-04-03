@@ -1,4 +1,4 @@
-module Data.ByteString.Fixed.Instances.Tests (tests) where
+module Data.Sized.ByteString.Tests (tests) where
 
 import Data.Maybe (fromJust)
 import Data.ByteString.Char8 (pack)
@@ -10,9 +10,9 @@ import Test.Framework.Providers.QuickCheck2 (testProperty)
 import Test.QuickCheck (Property, Arbitrary(..), suchThat)
 import Test.QuickCheck.Monadic (monadicIO, assert, run)
 
-import Data.ByteString.Fixed (FixedByteString, fromByteString)
+import Data.Sized.ByteString (SizedByteString, fromByteString)
 
-instance Arbitrary (FixedByteString 32) where
+instance Arbitrary (SizedByteString 32) where
     arbitrary = do
         s <- arbitrary `suchThat` ((32 ==) . length)
         let b = pack s
@@ -29,6 +29,6 @@ testStorable storable = monadicIO $ do
     size = sizeOf storable
 
 tests :: Test
-tests = testGroup "Data.ByteString.Fixed.Instances.Tests"
-    [ testProperty "Storable instance for FixedByteString" (testStorable :: FixedByteString 32 -> Property)
+tests = testGroup "Data.Sized.ByteString.Tests"
+    [ testProperty "Storable instance for SizedByteString" (testStorable :: SizedByteString 32 -> Property)
     ]

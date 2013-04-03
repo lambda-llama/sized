@@ -2,9 +2,9 @@ module Main where
 
 import Test.Framework (defaultMain)
 
-import qualified Data.ByteString.Fixed.Instances.Tests
+import qualified Data.Sized.ByteString.Tests
 
 main :: IO ()
 main = defaultMain
-    [ Data.ByteString.Fixed.Instances.Tests.tests
+    [ Data.Sized.ByteString.Tests.tests
     ]

@@ -1,14 +1,14 @@
-Name:               fixed-bytestring
+Name:               sized
 Version:            0.0.0
-Synopsis:           Bytestrings with fixed size
-Description:        Bytestrings with fixed size
+Synopsis:           Data types with fixed size
+Description:        Data types with fixed size
 License:            MIT
 License-file:       LICENSE
 Copyright:          Fedor Gogolev <knsd@knsd.net>
 Author:             Fedor Gogolev <knsd@knsd.net>
 Maintainer:         Fedor Gogolev <knsd@knsd.net>
-Homepage:           https://github.com/lambda-llama/fixed-bytestring
-Bug-reports:        https://github.com/lambda-llama/fixed-bytestring/issues
+Homepage:           https://github.com/lambda-llama/sized
+Bug-reports:        https://github.com/lambda-llama/sized/issues
 Category:           Data
 Stability:          Alpha
 Build-type:         Simple
@@ -32,12 +32,10 @@ Library
       , deepseq                    == 1.3.*
 
     Exposed-modules:
-        Data.ByteString.Fixed
-        Data.ByteString.Fixed.Foreign
-        Data.ByteString.Fixed.Instances
-        Data.ByteString.Fixed.Internal
+        Data.Sized.ByteString
+        Data.Sized.Foreign
 
-Test-suite fixed-bytestring-tests
+Test-suite sized-bytestring-tests
     Main-is:          Tests.hs
     Hs-source-dirs:   src, tests
     Default-language: Haskell2010
@@ -54,12 +52,33 @@ Test-suite fixed-bytestring-tests
       , bytestring                 == 0.10.*
       , deepseq                    == 1.3.*
 
-      , fixed-bytestring
+      , sized
       , criterion                  == 0.6.*
       , test-framework             == 0.8.*
       , test-framework-quickcheck2 == 0.3.*
       , QuickCheck                 == 2.5.*
 
+
+Benchmark fixed-bytestring-benchmarks-against-bytestring
+    Main-is: BenchmarksAgainstByteString.hs
+    Hs-source-dirs:   src, benchmarks
+    Ghc-options: -O2
+    Default-language: Haskell2010
+    Default-extensions:
+        ScopedTypeVariables
+        FlexibleInstances
+        UndecidableInstances
+        KindSignatures
+        DataKinds
+    Type:             exitcode-stdio-1.0
+
+    Build-depends:
+        base                       == 4.6.*
+      , bytestring                 == 0.10.*
+      , deepseq                    == 1.3.*
+
+      , criterion                  == 0.6.*
+
 Source-repository head
     Type:             git
-    Location:         https://github.com/lambda-llama/fixed-bytestring
+    Location:         https://github.com/lambda-llama/sized
