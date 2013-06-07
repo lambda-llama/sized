@@ -44,9 +44,9 @@ instance NatReflection a => Ord (SizedByteString a) where
     SizedByteString fp1 `compare` SizedByteString fp2 = inlinePerformIO $ do
         withForeignPtr fp1 $ \p1 -> withForeignPtr fp2 $ \p2 -> do
             memcmp p1 p2 size >>= \c -> return $ if
-              | c == 0 -> EQ
-              | c <  0 -> LT
-              | c >  0 -> GT
+                | c == 0 -> EQ
+                | c <  0 -> LT
+                | c >  0 -> GT
       where
         size = fromIntegral $ nat (undefined :: NatProxy a)
 
@@ -72,12 +72,10 @@ unsafeFromByteString b = unsafeCoerce $ unsafeDupablePerformIO $
 {-# INLINE unsafeFromByteString #-}
 
 fromByteString :: forall a. NatReflection a => ByteString -> Maybe (SizedByteString a)
-fromByteString b
-    | bsize == expected = Just $ unsafeFromByteString b
-    | otherwise         = Nothing
-  where
-    bsize = ByteString.length b
-    expected = nat (undefined :: NatProxy a)
+fromByteString b = let bsize = ByteString.length b
+                       expected = nat (undefined :: NatProxy a) in if
+    | bsize == expected -> Just $ unsafeFromByteString b
+    | otherwise         -> Nothing
 {-# INLINE fromByteString #-}
 
 toByteString :: forall a. NatReflection a => SizedByteString a -> ByteString
