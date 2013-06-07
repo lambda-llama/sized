@@ -1,110 +1,110 @@
 module Data.Sized.Nat
-    ( Nat, NatProxy
+    ( Nat
     , NatReflection(..)
     ) where
 
 import GHC.TypeLits (Nat)
 
-data NatProxy (nat :: Nat)
+import Data.Proxy (Proxy(..))
 
 class NatReflection (nat :: Nat) where
-    nat :: NatProxy nat -> Int
+    nat :: Proxy nat -> Int
 
 instance NatReflection 0 where
-    nat _ = 0
+    nat Proxy = 0
 
 instance NatReflection 1 where
-    nat _ = 1
+    nat Proxy = 1
 
 instance NatReflection 2 where
-    nat _ = 2
+    nat Proxy = 2
 
 instance NatReflection 3 where
-    nat _ = 3
+    nat Proxy = 3
 
 instance NatReflection 4 where
-    nat _ = 4
+    nat Proxy = 4
 
 instance NatReflection 5 where
-    nat _ = 5
+    nat Proxy = 5
 
 instance NatReflection 6 where
-    nat _ = 6
+    nat Proxy = 6
 
 instance NatReflection 7 where
-    nat _ = 7
+    nat Proxy = 7
 
 instance NatReflection 8 where
-    nat _ = 8
+    nat Proxy = 8
 
 instance NatReflection 9 where
-    nat _ = 9
+    nat Proxy = 9
 
 instance NatReflection 10 where
-    nat _ = 10
+    nat Proxy = 10
 
 instance NatReflection 11 where
-    nat _ = 11
+    nat Proxy = 11
 
 instance NatReflection 12 where
-    nat _ = 12
+    nat Proxy = 12
 
 instance NatReflection 13 where
-    nat _ = 13
+    nat Proxy = 13
 
 instance NatReflection 14 where
-    nat _ = 14
+    nat Proxy = 14
 
 instance NatReflection 15 where
-    nat _ = 15
+    nat Proxy = 15
 
 instance NatReflection 16 where
-    nat _ = 16
+    nat Proxy = 16
 
 instance NatReflection 17 where
-    nat _ = 17
+    nat Proxy = 17
 
 instance NatReflection 18 where
-    nat _ = 18
+    nat Proxy = 18
 
 instance NatReflection 19 where
-    nat _ = 19
+    nat Proxy = 19
 
 instance NatReflection 20 where
-    nat _ = 20
+    nat Proxy = 20
 
 instance NatReflection 21 where
-    nat _ = 21
+    nat Proxy = 21
 
 instance NatReflection 22 where
-    nat _ = 22
+    nat Proxy = 22
 
 instance NatReflection 23 where
-    nat _ = 23
+    nat Proxy = 23
 
 instance NatReflection 24 where
-    nat _ = 24
+    nat Proxy = 24
 
 instance NatReflection 25 where
-    nat _ = 25
+    nat Proxy = 25
 
 instance NatReflection 26 where
-    nat _ = 26
+    nat Proxy = 26
 
 instance NatReflection 27 where
-    nat _ = 27
+    nat Proxy = 27
 
 instance NatReflection 28 where
-    nat _ = 28
+    nat Proxy = 28
 
 instance NatReflection 29 where
-    nat _ = 29
+    nat Proxy = 29
 
 instance NatReflection 30 where
-    nat _ = 30
+    nat Proxy = 30
 
 instance NatReflection 31 where
-    nat _ = 31
+    nat Proxy = 31
 
 instance NatReflection 32 where
-    nat _ = 32
+    nat Proxy = 32
