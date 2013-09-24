@@ -7,7 +7,6 @@ module Data.Sized.ByteString
     , NatReflection(..), Proxy
     , fromByteString
     , toByteString
-    , inlinePerformIO
     , length
     ) where
 
