@@ -35,4 +35,6 @@ main = do
                 , bench "null fixed" $ whnf (SizedByteString.null) fbs1
                 , bench "cons bytestring" $ whnf (ByteString.cons 0) bs1
                 , bench "cons fixed" $ whnf (SizedByteString.cons 0) fbs1
+                , bench "snoc bytestring" $ whnf (ByteString.snoc bs1) 32
+                , bench "snoc fixed" $ whnf (SizedByteString.snoc fbs1) 32
                 ]

@@ -16,6 +16,7 @@ module Data.Sized.ByteString
     , null
     , length
     , cons
+    , snoc
     ) where
 
 import GHC.Base (realWorld#)
@@ -126,3 +127,10 @@ cons = \c b@(SizedByteString fps) -> unsafeDupablePerformIO $ unsafeCreate $ \pd
     poke pd c
     withForeignPtr fps $ \ps -> memcpy (pd `plusPtr` 1) ps $ fromIntegral $ length b
 {-# INLINE cons #-}
+
+snoc :: forall a b. (b ~ (a + 1), NatReflection a, NatReflection b) => SizedByteString a -> Word8 -> SizedByteString b
+snoc = \b@(SizedByteString fps) c -> unsafeDupablePerformIO $ unsafeCreate $ \pd -> do
+    let size = length b
+    withForeignPtr fps $ \ps -> memcpy pd ps $ fromIntegral size
+    poke (pd `plusPtr` size) c
+{-# INLINE snoc #-}
