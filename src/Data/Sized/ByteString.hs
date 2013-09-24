@@ -8,11 +8,13 @@ module Data.Sized.ByteString
     , fromByteString
     , toByteString
     , inlinePerformIO
+    , length
     ) where
 
 import GHC.Base (realWorld#)
 import GHC.ForeignPtr (ForeignPtr, mallocPlainForeignPtrBytes)
 import GHC.IO (IO(IO))
+import Prelude hiding (length)
 
 import Control.DeepSeq (NFData)
 import Data.ByteString (ByteString)
@@ -59,6 +61,10 @@ instance NatReflection a => Storable (SizedByteString a) where
     poke ptr f@(SizedByteString fp) = withForeignPtr fp $ \p ->
         memcpy (castPtr ptr) p $ fromIntegral $ sizeOf f
 
+inlinePerformIO :: IO a -> a
+inlinePerformIO (IO m) = case m realWorld# of (# _, r #) -> r
+{-# INLINE inlinePerformIO #-}
+
 unsafeFromPtr :: forall a b. NatReflection a => Ptr b -> IO (SizedByteString a)
 unsafeFromPtr p = do
     let size = nat (Proxy :: Proxy a)
@@ -86,6 +92,6 @@ toByteString (SizedByteString fp) = unsafeDupablePerformIO $ withForeignPtr fp $
     unsafePackCStringLen (castPtr p, fromIntegral size)
 {-# INLINE toByteString #-}
 
-inlinePerformIO :: IO a -> a
-inlinePerformIO (IO m) = case m realWorld# of (# _, r #) -> r
-{-# INLINE inlinePerformIO #-}
+length :: forall a. NatReflection a => SizedByteString a -> Int
+length _ = nat (Proxy :: Proxy a)
+{-# INLINE length #-}
