@@ -108,10 +108,9 @@ singleton c = unsafeDupablePerformIO $ unsafeCreate $ \_ p -> poke p c
 {-# INLINE singleton #-}
 
 null :: forall a. NatReflection a => SizedByteString a -> Bool
-null _ | nat (Proxy :: Proxy a) == 0 = True
-       | otherwise                   = False
+null = const $ nat (Proxy :: Proxy a) == 0
 {-# INLINE null #-}
 
 length :: forall a. NatReflection a => SizedByteString a -> Int
-length _ = nat (Proxy :: Proxy a)
+length = const $ nat (Proxy :: Proxy a)
 {-# INLINE length #-}
