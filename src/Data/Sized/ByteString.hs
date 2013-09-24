@@ -1,4 +1,6 @@
 {-# LANGUAGE UnboxedTuples #-}
+{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE MagicHash #-}
 {-# LANGUAGE MultiWayIf #-}
 
@@ -13,18 +15,20 @@ module Data.Sized.ByteString
     , singleton
     , null
     , length
+    , cons
     ) where
 
 import GHC.Base (realWorld#)
 import GHC.ForeignPtr (ForeignPtr, mallocPlainForeignPtrBytes)
 import GHC.IO (IO(IO))
+import GHC.TypeLits
 import Prelude hiding (length, null)
 
 import Control.DeepSeq (NFData)
 import Data.ByteString (ByteString)
 import Data.ByteString.Unsafe (unsafeUseAsCString, unsafePackCStringLen)
 import Data.Word (Word8)
-import Foreign (Ptr, castPtr, withForeignPtr)
+import Foreign (Ptr, castPtr, plusPtr, withForeignPtr)
 import Foreign.Storable (Storable(..))
 import System.IO.Unsafe (unsafeDupablePerformIO)
 import Unsafe.Coerce (unsafeCoerce)
@@ -32,7 +36,7 @@ import qualified Data.ByteString as ByteString
 
 import Data.Proxy (Proxy(..))
 
-import Data.Sized.Nat (Nat, NatReflection(nat))
+import Data.Sized.Nat (NatReflection(nat))
 import Data.Sized.Foreign (memcpy, memcmp)
 
 data SizedByteString (size :: Nat) = SizedByteString {-# UNPACK #-} !(ForeignPtr Word8)
@@ -69,16 +73,18 @@ inlinePerformIO :: IO a -> a
 inlinePerformIO (IO m) = case m realWorld# of (# _, r #) -> r
 {-# INLINE inlinePerformIO #-}
 
-unsafeCreate :: forall a. NatReflection a => (Int -> Ptr Word8 -> IO ()) -> IO (SizedByteString a)
+unsafeCreate :: forall a. NatReflection a => (Ptr Word8 -> IO ()) -> IO (SizedByteString a)
 unsafeCreate f = do
     let size = nat (Proxy :: Proxy a)
     fp <- mallocPlainForeignPtrBytes size
-    withForeignPtr fp $ f size
+    withForeignPtr fp f
     return $! SizedByteString fp
 {-# INLINE unsafeCreate #-}
 
 unsafeFromPtr :: forall a b. NatReflection a => Ptr b -> IO (SizedByteString a)
-unsafeFromPtr p = unsafeCreate $ \size p' -> memcpy p' (castPtr p) $ fromIntegral size
+unsafeFromPtr p = do
+    let size = nat (Proxy :: Proxy a)
+    unsafeCreate $ \p' -> memcpy p' (castPtr p) $ fromIntegral size
 {-# INLINE unsafeFromPtr #-}
 
 unsafeFromByteString :: forall a. NatReflection a => ByteString -> SizedByteString a
@@ -104,7 +110,7 @@ empty = SizedByteString $ unsafeDupablePerformIO $ mallocPlainForeignPtrBytes 0
 {-# NOINLINE empty #-}
 
 singleton :: Word8 -> SizedByteString 1
-singleton c = unsafeDupablePerformIO $ unsafeCreate $ \_ p -> poke p c
+singleton c = unsafeDupablePerformIO $ unsafeCreate $ \p -> poke p c
 {-# INLINE singleton #-}
 
 null :: forall a. NatReflection a => SizedByteString a -> Bool
@@ -114,3 +120,9 @@ null = const $ nat (Proxy :: Proxy a) == 0
 length :: forall a. NatReflection a => SizedByteString a -> Int
 length = const $ nat (Proxy :: Proxy a)
 {-# INLINE length #-}
+
+cons :: forall a b. (b ~ (a + 1), NatReflection a, NatReflection b) => Word8 -> SizedByteString a -> SizedByteString b
+cons = \c b@(SizedByteString fps) -> unsafeDupablePerformIO $ unsafeCreate $ \pd -> do
+    poke pd c
+    withForeignPtr fps $ \ps -> memcpy (pd `plusPtr` 1) ps $ fromIntegral $ length b
+{-# INLINE cons #-}
