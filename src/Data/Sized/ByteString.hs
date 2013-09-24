@@ -10,6 +10,7 @@ module Data.Sized.ByteString
     , toByteString
 
     , empty
+    , singleton
     , null
     , length
     ) where
@@ -68,13 +69,16 @@ inlinePerformIO :: IO a -> a
 inlinePerformIO (IO m) = case m realWorld# of (# _, r #) -> r
 {-# INLINE inlinePerformIO #-}
 
-unsafeFromPtr :: forall a b. NatReflection a => Ptr b -> IO (SizedByteString a)
-unsafeFromPtr p = do
+unsafeCreate :: forall a. NatReflection a => (Int -> Ptr Word8 -> IO ()) -> IO (SizedByteString a)
+unsafeCreate f = do
     let size = nat (Proxy :: Proxy a)
     fp <- mallocPlainForeignPtrBytes size
-    withForeignPtr fp $ \p' -> do
-        memcpy p' (castPtr p) $ fromIntegral size
-        return $! SizedByteString fp
+    withForeignPtr fp $ f size
+    return $! SizedByteString fp
+{-# INLINE unsafeCreate #-}
+
+unsafeFromPtr :: forall a b. NatReflection a => Ptr b -> IO (SizedByteString a)
+unsafeFromPtr p = unsafeCreate $ \size p' -> memcpy p' (castPtr p) $ fromIntegral size
 {-# INLINE unsafeFromPtr #-}
 
 unsafeFromByteString :: forall a. NatReflection a => ByteString -> SizedByteString a
@@ -98,6 +102,9 @@ toByteString (SizedByteString fp) = unsafeDupablePerformIO $ withForeignPtr fp $
 empty :: SizedByteString 0
 empty = SizedByteString $ unsafeDupablePerformIO $ mallocPlainForeignPtrBytes 0
 {-# NOINLINE empty #-}
+
+singleton :: Word8 -> SizedByteString 1
+singleton c = unsafeDupablePerformIO $ unsafeCreate $ \_ p -> poke p c
 
 null :: forall a. NatReflection a => SizedByteString a -> Bool
 null _ | nat (Proxy :: Proxy a) == 0 = True
