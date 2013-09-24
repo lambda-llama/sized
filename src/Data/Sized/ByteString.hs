@@ -5,8 +5,11 @@
 module Data.Sized.ByteString
     ( SizedByteString(..)
     , NatReflection(..), Proxy
+
     , fromByteString
     , toByteString
+
+    , empty
     , length
     ) where
 
@@ -90,6 +93,10 @@ toByteString (SizedByteString fp) = unsafeDupablePerformIO $ withForeignPtr fp $
     let size = nat (Proxy :: Proxy a)
     unsafePackCStringLen (castPtr p, fromIntegral size)
 {-# INLINE toByteString #-}
+
+empty :: SizedByteString 0
+empty = SizedByteString $ unsafeDupablePerformIO $ mallocPlainForeignPtrBytes 0
+{-# NOINLINE empty #-}
 
 length :: forall a. NatReflection a => SizedByteString a -> Int
 length _ = nat (Proxy :: Proxy a)
