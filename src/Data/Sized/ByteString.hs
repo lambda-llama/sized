@@ -10,13 +10,14 @@ module Data.Sized.ByteString
     , toByteString
 
     , empty
+    , null
     , length
     ) where
 
 import GHC.Base (realWorld#)
 import GHC.ForeignPtr (ForeignPtr, mallocPlainForeignPtrBytes)
 import GHC.IO (IO(IO))
-import Prelude hiding (length)
+import Prelude hiding (length, null)
 
 import Control.DeepSeq (NFData)
 import Data.ByteString (ByteString)
@@ -97,6 +98,11 @@ toByteString (SizedByteString fp) = unsafeDupablePerformIO $ withForeignPtr fp $
 empty :: SizedByteString 0
 empty = SizedByteString $ unsafeDupablePerformIO $ mallocPlainForeignPtrBytes 0
 {-# NOINLINE empty #-}
+
+null :: forall a. NatReflection a => SizedByteString a -> Bool
+null _ | nat (Proxy :: Proxy a) == 0 = True
+       | otherwise                   = False
+{-# INLINE null #-}
 
 length :: forall a. NatReflection a => SizedByteString a -> Int
 length _ = nat (Proxy :: Proxy a)
