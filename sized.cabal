@@ -30,7 +30,7 @@ Library
         base                       == 4.6.*
       , bytestring                 == 0.10.*
       , deepseq                    == 1.3.*
-      , tagged                     == 0.6.*
+      , tagged                     == 0.7.*
 
     Exposed-modules:
         Data.Sized.ByteString
@@ -52,7 +52,7 @@ Test-suite sized-bytestring-tests
         base                       == 4.6.*
       , bytestring                 == 0.10.*
       , deepseq                    == 1.3.*
-      , tagged                     == 0.6.*
+      , tagged                     == 0.7.*
 
       , sized
       , criterion                  == 0.6.*
@@ -78,7 +78,7 @@ Benchmark fixed-bytestring-benchmarks-against-bytestring
         base                       == 4.6.*
       , bytestring                 == 0.10.*
       , deepseq                    == 1.3.*
-      , tagged                     == 0.6.*
+      , tagged                     == 0.7.*
 
       , criterion                  == 0.6.*
 
