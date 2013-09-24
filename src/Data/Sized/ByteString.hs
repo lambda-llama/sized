@@ -105,6 +105,7 @@ empty = SizedByteString $ unsafeDupablePerformIO $ mallocPlainForeignPtrBytes 0
 
 singleton :: Word8 -> SizedByteString 1
 singleton c = unsafeDupablePerformIO $ unsafeCreate $ \_ p -> poke p c
+{-# INLINE singleton #-}
 
 null :: forall a. NatReflection a => SizedByteString a -> Bool
 null _ | nat (Proxy :: Proxy a) == 0 = True
