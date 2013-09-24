@@ -22,4 +22,6 @@ main = do
                 , bench "ord fixed" $ whnf (`compare` fbs1) fbs2
                 , bench "singleton bytestring" $ whnf (ByteString.singleton) 0
                 , bench "singleton fixed" $ whnf (SizedByteString.singleton) 0
+                , bench "null bytestring" $ whnf (ByteString.null) bs1
+                , bench "null fixed" $ whnf (SizedByteString.null) fbs1
                 ]
