@@ -141,7 +141,7 @@ snoc = \b@(SizedByteString fps) c -> unsafeDupablePerformIO $ unsafeCreate $ \pd
 {-# INLINE snoc #-}
 
 head :: forall a. (1 <= a, NatReflection a) => SizedByteString a -> Word8
-head = \(SizedByteString fp) -> inlinePerformIO $ withForeignPtr fp $ \p -> peek p
+head = \(SizedByteString fp) -> inlinePerformIO $ withForeignPtr fp peek
 {-# INLINE head #-}
 
 last :: forall a. (1 <= a, NatReflection a) => SizedByteString a -> Word8
