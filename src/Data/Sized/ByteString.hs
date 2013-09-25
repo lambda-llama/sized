@@ -1,6 +1,7 @@
 {-# LANGUAGE UnboxedTuples #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE MagicHash #-}
 {-# LANGUAGE MultiWayIf #-}
 
@@ -15,15 +16,19 @@ module Data.Sized.ByteString
     , singleton
     , null
     , length
+
     , cons
     , snoc
+
+    , head
+    , last
     ) where
 
 import GHC.Base (realWorld#)
 import GHC.ForeignPtr (ForeignPtr, mallocPlainForeignPtrBytes)
 import GHC.IO (IO(IO))
 import GHC.TypeLits
-import Prelude hiding (length, null)
+import Prelude hiding (length, null, head, last)
 
 import Control.DeepSeq (NFData)
 import Data.ByteString (ByteString)
@@ -134,3 +139,12 @@ snoc = \b@(SizedByteString fps) c -> unsafeDupablePerformIO $ unsafeCreate $ \pd
     withForeignPtr fps $ \ps -> memcpy pd ps $ fromIntegral size
     poke (pd `plusPtr` size) c
 {-# INLINE snoc #-}
+
+head :: forall a. (1 <= a, NatReflection a) => SizedByteString a -> Word8
+head = \(SizedByteString fp) -> inlinePerformIO $ withForeignPtr fp $ \p -> peek p
+{-# INLINE head #-}
+
+last :: forall a. (1 <= a, NatReflection a) => SizedByteString a -> Word8
+last = \(SizedByteString fp) -> inlinePerformIO $ withForeignPtr fp $ \p -> peekByteOff p off
+  where off = nat (Proxy :: Proxy a) - 1
+{-# INLINE last #-}

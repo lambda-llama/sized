@@ -1,4 +1,6 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE CPP #-}
 
 module Main (main) where
@@ -17,6 +19,7 @@ import qualified Data.Sized.ByteString as SizedByteString
 
 #if defined(__GLASGOW_HASKELL__) && (__GLASGOW_HASKELL__ < 707)
 type instance 31 + 1 = 32
+instance 1 <= 31
 #endif
 
 main :: IO ()
@@ -37,4 +40,8 @@ main = do
                 , bench "cons fixed" $ whnf (SizedByteString.cons 0) fbs1
                 , bench "snoc bytestring" $ whnf (ByteString.snoc bs1) 32
                 , bench "snoc fixed" $ whnf (SizedByteString.snoc fbs1) 32
+                , bench "head bytestring" $ whnf (ByteString.head) bs1
+                , bench "head fixed" $ whnf (SizedByteString.head) fbs1
+                , bench "last bytestring" $ whnf (ByteString.last) bs1
+                , bench "last fixed" $ whnf (SizedByteString.last) fbs1
                 ]
