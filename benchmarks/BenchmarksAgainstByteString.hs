@@ -6,7 +6,6 @@
 module Main (main) where
 
 import Prelude hiding (replicate)
-import GHC.TypeLits
 
 import Data.ByteString.Char8 (ByteString, replicate, snoc)
 import Data.Maybe (fromJust)
@@ -16,11 +15,6 @@ import Criterion.Main (defaultMain, bench, whnf)
 
 import Data.Sized.ByteString (SizedByteString, fromByteString)
 import qualified Data.Sized.ByteString as SizedByteString
-
-#if defined(__GLASGOW_HASKELL__) && (__GLASGOW_HASKELL__ < 707)
-type instance 31 + 1 = 32
-instance 1 <= 31
-#endif
 
 main :: IO ()
 main = do
