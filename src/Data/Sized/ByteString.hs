@@ -76,7 +76,7 @@ inlinePerformIO :: IO a -> a
 inlinePerformIO (IO m) = case m realWorld# of (# _, r #) -> r
 {-# INLINE inlinePerformIO #-}
 
-rep :: KnownNat (a :: Nat) => proxy a -> Int
+rep :: KnownNat a => proxy a -> Int
 rep = fromInteger . natVal
 {-# INLINE rep #-}
 
