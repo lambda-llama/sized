@@ -1,10 +1,10 @@
 module Main where
 
-import Test.Framework (defaultMain)
+import Test.Tasty (defaultMain, testGroup)
 
 import qualified Data.Sized.ByteString.Tests
 
 main :: IO ()
-main = defaultMain
+main = defaultMain $ testGroup "Tests"
     [ Data.Sized.ByteString.Tests.tests
     ]
