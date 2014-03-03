@@ -26,7 +26,7 @@ module Data.Sized.ByteString
 import GHC.Base (realWorld#)
 import GHC.ForeignPtr (ForeignPtr, mallocPlainForeignPtrBytes)
 import GHC.IO (IO(IO))
-import GHC.TypeLits
+import GHC.TypeLits (Nat, KnownNat, natVal, type (+), type (<=))
 import Prelude hiding (length, null, head, last)
 
 import Control.DeepSeq (NFData)
